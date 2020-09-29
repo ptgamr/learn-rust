@@ -1,5 +1,5 @@
 [package]
-name = "learn_panic"
+name = "ch09-error-handling"
 version = "0.1.0"
 authors = ["Anh <anh.trinhtrung@gmail.com>"]
 edition = "2018"

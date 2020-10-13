@@ -1,15 +1,7 @@
-fn main() {
-    let number_list: Vec<i32> = vec![34, 60, 25, 199, 200, 100, 65];
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+    let mut largest = list[0];
 
-    let result = largest(&number_list);
-    println!("The largest number is {}", result);
-    println!("The list {:?}", number_list);
-}
-
-fn largest(list: &Vec<i32>) -> &i32 {
-    let mut largest = &list[0];
-
-    for item in list {
+    for &item in list {
         if item > largest {
             largest = item;
         }
@@ -17,3 +9,16 @@ fn largest(list: &Vec<i32>) -> &i32 {
 
     largest
 }
+
+fn main() {
+    let number_list = vec![34, 50, 25, 100, 65];
+
+    let result = largest(&number_list);
+    println!("The largest number is {}", result);
+
+    let char_list = vec!['y', 'm', 'a', 'q'];
+
+    let result = largest(&char_list);
+    println!("The largest char is {}", result);
+}
+

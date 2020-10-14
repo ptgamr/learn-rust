@@ -40,7 +40,6 @@ mod tests {
     #[test]
     #[should_panic]
     fn greater_than_100() {
-        let guess = Guess::new(200);
-        assert!(guess.value)
+        Guess::new(200);
     }
 }

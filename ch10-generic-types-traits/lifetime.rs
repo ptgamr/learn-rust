@@ -19,12 +19,17 @@ fn main() {
     println!("The longest string is {}", result);
 
     // ======================
-    let novel = String::from("Call me Ishmael. Some years ago...");
-    let parts = novel.split('.').next();
-    println!("splitted {:#?}", parts);
 
+    let first_sentence;
 
-    let first_sentence = novel.split('.').next().unwrap();
+    {
+        let novel;
+        novel = String::from("Call me Ishmael. Some years ago...");
+        let parts = novel.split('.').next();
+        println!("splitted {:#?}", parts);
+        first_sentence = novel.split('.').next().unwrap().clone();
+    }
+
     let i = ImportantExcerpt {
         part: first_sentence,
     };

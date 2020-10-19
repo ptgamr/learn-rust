@@ -1,27 +1,29 @@
 use std::thread;
 use std::time::Duration;
+use std::marker::PhantomData;
 
-struct Cacher<T>
+struct Cacher<T, P, R>
 where
-    T: Fn(u32) -> u32,
+    T: Fn(P) -> R,
 {
     calculation: T,
-    value: Option<u32>,
-
+    value: Option<R>,
+    phantom: PhantomData<P>,
 }
 
-impl<T> Cacher<T>
+impl<T, P, R> Cacher<T, P, R>
 where 
-    T: Fn(u32) -> u32,
+    T: Fn(P) -> R,
 {
-    fn new(calculation: T) -> Cacher<T> {
+    fn new(calculation: T) -> Cacher<T, P, R> {
         Cacher {
             calculation,
             value: None,
+            phantom: PhantomData,
         }
     }
 
-    fn value(&mut self, arg: u32) -> u32 {
+    fn value(&mut self, arg: P) -> R {
         match self.value {
             Some(v) => v,
             None => {

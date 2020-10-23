@@ -5,6 +5,7 @@ use std::marker::PhantomData;
 struct Cacher<T, P, R>
 where
     T: Fn(P) -> R,
+    R: Copy,
 {
     calculation: T,
     value: Option<R>,
@@ -14,6 +15,7 @@ where
 impl<T, P, R> Cacher<T, P, R>
 where 
     T: Fn(P) -> R,
+    R: Copy
 {
     fn new(calculation: T) -> Cacher<T, P, R> {
         Cacher {

@@ -1,36 +1,37 @@
 use std::thread;
 use std::time::Duration;
-use std::marker::PhantomData;
+use std::collections::HashMap;
+use std::hash::Hash;
 
 struct Cacher<T, P, R>
 where
-    T: Fn(P) -> R,
+    T: Fn(&P) -> R,
     R: Copy,
+    P: Hash + Eq,
 {
     calculation: T,
-    value: Option<R>,
-    phantom: PhantomData<P>,
+    values: HashMap<P, R>,
 }
 
 impl<T, P, R> Cacher<T, P, R>
 where 
-    T: Fn(P) -> R,
-    R: Copy
+    T: Fn(&P) -> R,
+    R: Copy,
+    P: Hash + Eq,
 {
     fn new(calculation: T) -> Cacher<T, P, R> {
         Cacher {
             calculation,
-            value: None,
-            phantom: PhantomData,
+            values: HashMap::new(),
         }
     }
 
     fn value(&mut self, arg: P) -> R {
-        match self.value {
-            Some(v) => v,
+        match self.values.get(&arg) {
+            Some(&v) => v,
             None => {
-                let v = (self.calculation)(arg);
-                self.value = Some(v);
+                let v = (self.calculation)(&arg);
+                self.values.insert(arg, v);
                 v
             }
         }
@@ -41,7 +42,7 @@ fn generate_workout(intensity: u32, random_number: u32) {
     let mut expensive_result = Cacher::new(|num| {
         println!("calculating slowly...");
         thread::sleep(Duration::from_secs(2));
-        num
+        *num
     });
 
     if intensity < 25 {
@@ -72,7 +73,7 @@ mod tests {
 
     #[test]
     fn call_with_different_values() {
-        let mut c = Cacher::new(|a| a);
+        let mut c = Cacher::new(|a| *a);
 
         let v1 = c.value(1);
         let v2 = c.value(2);

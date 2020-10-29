@@ -33,3 +33,25 @@ fn iterator_sum() {
     // --> We call it "Consume the Iterator"
 
 }
+
+#[test]
+fn iterator_map_closure() {
+    let v1 = vec![1, 2, 3];
+
+    let v2: Vec<_> = v1.iter().map(|x| x + 1).collect();
+
+    assert_eq!(v2, vec![2,3,4]);
+}
+
+#[test]
+fn iterator_map_fn() {
+    let v1 = vec![1, 2, 3];
+
+    fn plus_one(x: &i32) -> i32 {
+        x + 1
+    }
+
+    let v2: Vec<_> = v1.iter().map(plus_one).collect();
+
+    assert_eq!(v2, vec![2,3,4]);
+}

@@ -5,11 +5,11 @@ struct Shoe {
 }
 
 #[allow(dead_code)]
-fn shoes_in_my_size(shoes: Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
+fn shoes_in_my_size(shoes: &Vec<Shoe>, shoe_size: u32) -> Vec<Shoe> {
     // have to use into_iter
     // to create an iterator that takes ownership of the vector.... 
     //
-    // BUT WHY????
+    // BUT WHY do we need to take the ownership????
     // 
     // filter will adapt that iterator into a new iterator that contains only elements
     // for which the closure returns `true`
@@ -37,7 +37,10 @@ mod tests {
             },
         ];
 
-        let in_my_size = shoes_in_my_size(shoes, 10);
+        let in_my_size = shoes_in_my_size(&shoes, 10);
+
+
+        println!("Shoes {:?}", shoes);
 
         assert_eq!(
             in_my_size,
@@ -51,6 +54,7 @@ mod tests {
                     style: String::from("boot"),
                 },
             ]
-        )
+        );
+    
     }
 }

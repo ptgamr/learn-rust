@@ -5,7 +5,7 @@ use std::hash::Hash;
 
 struct Cacher<T, P, R>
 where
-    T: Fn(&P) -> R,
+    T: Fn(P) -> R,
     R: Copy,
     P: Hash + Eq,
 {
@@ -15,9 +15,9 @@ where
 
 impl<T, P, R> Cacher<T, P, R>
 where 
-    T: Fn(&P) -> R,
+    T: Fn(P) -> R,
     R: Copy,
-    P: Hash + Eq,
+    P: Hash + Eq + Copy,
 {
     fn new(calculation: T) -> Cacher<T, P, R> {
         Cacher {
@@ -30,7 +30,7 @@ where
         match self.values.get(&arg) {
             Some(&v) => v,
             None => {
-                let v = (self.calculation)(&arg);
+                let v = (self.calculation)(arg);
                 self.values.insert(arg, v);
                 v
             }
@@ -42,7 +42,7 @@ fn generate_workout(intensity: u32, random_number: u32) {
     let mut expensive_result = Cacher::new(|num| {
         println!("calculating slowly...");
         thread::sleep(Duration::from_secs(2));
-        *num
+        num
     });
 
     if intensity < 25 {
@@ -73,11 +73,23 @@ mod tests {
 
     #[test]
     fn call_with_different_values() {
-        let mut c = Cacher::new(|a| *a);
+        let mut c = Cacher::new(|a| a);
 
         let v1 = c.value(1);
-        let v2 = c.value(2);
+        assert_eq!(v1, 1);
 
+        let v2 = c.value(2);
         assert_eq!(v2, 2);
+    }
+
+    #[test]
+    fn call_with_string_and_return_usize() {
+        let mut c = Cacher::new(|s: &str| s.len());
+
+        let v1 = c.value("abc");
+        assert_eq!(v1, 3);
+
+        let v2 = c.value("cdefg");
+        assert_eq!(v2, 5);
     }
 }

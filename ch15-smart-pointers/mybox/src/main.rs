@@ -25,4 +25,11 @@ fn main() {
 
     assert_eq!(5, x);
     assert_eq!(5, *y);
+
+    // when we enter *y
+    // behind the scenes, Rust actually ran this code
+    // *(y.deref)
+    //
+    // Rust substitues the * operator with a call to `deref()` and then a plain dereference
+    // so we don't have to think about whether or not we need to call the deref method.
 }
